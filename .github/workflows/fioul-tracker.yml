@@ -1,0 +1,35 @@
+on:
+  schedule:
+    # UTC-tijden = 07:00, 12:00, 17:00, 22:00 Nederlandse wintertijd.
+    # In zomertijd (UTC+2) komt dit een uur eerder uit; pas aan indien gewenst.
+    - cron: "0 6,11,16,21 * * *"
+  workflow_dispatch:   # handmatig starten via het tabblad Actions
+
+permissions:
+  contents: write      # nodig om het CSV-bestand terug te committen
+
+jobs:
+  track:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Installeer afhankelijkheden
+        run: pip install -r requirements.txt
+
+      - name: Haal prijs op
+        # Een mislukte run wordt als regel in het CSV-bestand vastgelegd;
+        # de workflow zelf mag daardoor niet stoppen.
+        run: python fioul_tracker.py || true
+
+      - name: Sla CSV op in de repo
+        run: |
+          git config user.name "fioul-bot"
+          git config user.email "fioul-bot@users.noreply.github.com"
+          git add fioul_prijzen.csv
+          git diff --staged --quiet || git commit -m "Prijs bijgewerkt $(date -u +'%Y-%m-%d %H:%M UTC')"
+          git push
