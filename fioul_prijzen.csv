@@ -1,2 +1,2 @@
-tijdstip;product;postcode;liters;prijs_per_1000L_eur;status
-2026-11-07 16:19;fioul qualité supérieure;75001;1000;;prijs_niet_gevonden
+tijdstip;bron;prijs_gewoon_per_1000L_eur;prijs_superieur_per_1000L_eur;status
+2026-11-07 16:39;https://www.fioulmarket.fr/prix-fioul;1888;;alleen_gewoon_gevonden
